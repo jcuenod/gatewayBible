@@ -27,7 +27,6 @@
 			e.preventDefault()
 			var ref = document.querySelector("#ref").value
 			localStorage.setItem("lastref", ref)
-			console.log(document.querySelector("#ref").value)
 			texts = ["NIV", "ESV", "NLT", "NET"]
 			f = {
 				"url": "https://biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=NIV;ESV;NLT;NET",
@@ -48,14 +47,12 @@
 			}).then(function(response) {
 				return response.json();
 			}).then(function(json) {
-				console.log(json)
 				output = ""
 				json.texts.forEach((el, index) => {
 					output += "<div>" + texts[index] + ": " + el.content + "</div>"
 				})
 				document.querySelector(".versiontext").innerHTML = output
 			})
-			console.log("finger")
 		}
 	</script>
 </head>
