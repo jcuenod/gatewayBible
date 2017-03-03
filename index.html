@@ -24,11 +24,12 @@
 	</style>
 	<script lang="text/javascript">
 		function runQuery(e) {
-			e.preventDefault()
+			if (e)
+				e.preventDefault()
 			var ref = document.querySelector("#ref").value
 			localStorage.setItem("lastref", ref)
-			texts = ["NIV", "ESV", "NLT", "NET"]
-			f = {
+			var texts = ["NIV", "ESV", "NLT", "NET"]
+			var f = {
 				"url": "https://biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=NIV;ESV;NLT;NET",
 				"json_data": JSON.stringify({
 					"texts": [{
@@ -45,7 +46,7 @@
 				},
 				body: JSON.stringify(f)
 			}).then(function(response) {
-				return response.json();
+				return response.json()
 			}).then(function(json) {
 				output = ""
 				json.texts.forEach((el, index) => {
@@ -67,6 +68,8 @@
 		var ref = localStorage.getItem("lastref")
 		if (ref)
 			document.querySelector("#ref").value = ref
+		runQuery()
+		document.querySelector("#ref").focus()
 	</script>
 </body>
 
