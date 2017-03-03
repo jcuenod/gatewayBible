@@ -66,8 +66,9 @@
 	<div class="versiontext"></div>
 	<script type="text/javascript">
 		var ref = localStorage.getItem("lastref")
-		if (ref)
-			document.querySelector("#ref").value = ref
+		if (!ref)
+			ref = "John 1:1"
+		document.querySelector("#ref").value = ref
 		runQuery()
 		document.querySelector("#ref").focus()
 	</script>
