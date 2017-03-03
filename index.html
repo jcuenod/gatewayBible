@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<style type="text/css">
+	.passage-display-bcv,
+	.passage-display-version,
+	.chapternum,
+	.versenum,
+	.footnote,
+	.footnotes,
+	.crossreference,
+	.crossrefs,
+	.passage-display {
+		display: none;
+	}
+	.versiontext p, .versiontext .poetry {
+		display: inline;
+	}
+	.versiontext br, .versiontext h1, .versiontext h3 {
+		display: none;
+	}
+	</style>
+	<script lang="text/javascript">
+		function runQuery(e) {
+			e.preventDefault()
+			var ref = document.querySelector("#ref").value
+			localStorage.setItem("lastref", ref)
+			console.log(document.querySelector("#ref").value)
+			texts = ["NIV", "ESV", "NLT", "NET"]
+			f = {
+				"url": "https://biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=NIV;ESV;NLT;NET",
+				"json_data": JSON.stringify({
+					"texts": [{
+						"elem": ".result-text-style-normal",
+						"content": "html"
+					}]
+				})
+			}
+			fetch('https://www.jamapi.xyz', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(f)
+			}).then(function(response) {
+				return response.json();
+			}).then(function(json) {
+				console.log(json)
+				output = ""
+				json.texts.forEach((el, index) => {
+					output += "<div>" + texts[index] + ": " + el.content + "</div>"
+				})
+				document.querySelector(".versiontext").innerHTML = output
+			})
+			console.log("finger")
+		}
+	</script>
+</head>
+
+<body>
+	<form>
+		<input id="ref" type="text" value="Hebrews 4:31">
+		<button onclick="runQuery(event)">go</button>
+	</form>
+	<div class="versiontext"></div>
+	<script type="text/javascript">
+		var ref = localStorage.getItem("lastref")
+		if (ref)
+			document.querySelector("#ref").value = ref
+	</script>
+</body>
+
+</html>
