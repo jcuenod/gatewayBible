@@ -15,42 +15,29 @@
 	.passage-display {
 		display: none;
 	}
-	.versiontext p, .versiontext .poetry {
-		display: inline;
-	}
-	.versiontext br, .versiontext h1, .versiontext h2, .versiontext h3 {
-		display: none;
-	}
 	</style>
 	<script lang="text/javascript">
+		const versions = ["NIV", "ESV", "NLT", "NRSV", "NET"]
+		const vSelect = versions.map(v => ({version: v, selector: `.version-${v} p`}))
+		const url = query => `https://web.scraper.workers.dev/?url=https%3A%2F%2Fwww.biblegateway.com%2Fpassage%2F%3Fsearch%3D${encodeURIComponent(query)}%26version%3D${versions.join(";")}&selector=${vSelect.map(v => v.selector).join(",")}&scrape=text&pretty=true`
+
 		function runQuery(e) {
 			if (e)
 				e.preventDefault()
 			var ref = document.querySelector("#ref").value
 			localStorage.setItem("lastref", ref)
-			var texts = ["NIV", "ESV", "NLT", "NET"]
-			var f = {
-				"url": "https://biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=NIV;ESV;NLT;NET",
-				"json_data": JSON.stringify({
-					"texts": [{
-						"elem": ".result-text-style-normal",
-						"content": "html"
-					}]
-				})
-			}
-			fetch('https://www.jamapi.xyz', {
-				method: 'POST',
+			fetch(url(ref), {
+				mode: "cors",
+				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(f)
-			}).then(function(response) {
+				}
+			}).then(response => {
 				return response.json()
-			}).then(function(json) {
+			}).then(response => {
 				output = ""
-				json.texts.forEach((el, index) => {
-					output += "<div>" + texts[index] + ": " + el.content + "</div>"
+				vSelect.forEach(v => {
+					output += `<div><b>${v.version}</b><br />${response.result[v.selector].map(t => t.replace(/\&nbsp;/g, " ")).join("<br />")}</div>`
 				})
 				document.querySelector(".versiontext").innerHTML = output
 			})
