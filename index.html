@@ -17,7 +17,7 @@
 	}
 	</style>
 	<script lang="text/javascript">
-		const versions = ["NIV", "ESV", "NLT", "NRSV", "NET"]
+		const versions = ["NIV", "ESV", "NLT", "NRSVA", "NASB", "KJV", "NET"]
 		const vSelect = versions.map(v => ({version: v, selector: `.version-${v} p`}))
 		const url = query => `https://web.scraper.workers.dev/?url=https%3A%2F%2Fwww.biblegateway.com%2Fpassage%2F%3Fsearch%3D${encodeURIComponent(query)}%26version%3D${versions.join(";")}&selector=${vSelect.map(v => v.selector).join(",")}&scrape=text&pretty=true`
 
